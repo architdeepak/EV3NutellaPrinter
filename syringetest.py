@@ -124,6 +124,33 @@ def syringe_push(sec=20, power=100):
     s_mtr.brake()
     ev3.speaker.beep()
 
+def syringe_push_from_path(path_num, total_deg=430):
+    """
+    Read a path file and gradually push the syringe
+    according to black points (draw=True).
+
+    Args:
+        path_num: integer, which file to read (paths/{path_num}.txt)
+        total_deg: total syringe rotation for the segment
+    """
+    # Load path
+    path = load_path(path_num)
+
+    # Count black points (drawing points)
+    draw_points = [p for p in path if p[2]]
+    num_draw_points = len(draw_points)
+
+    deg_per_point = total_deg / num_draw_points
+    syringe_progress = 0
+
+    print(f"Total drawing points: {num_draw_points}, deg per point: {deg_per_point:.2f}")
+
+    for i, (x, y, draw) in enumerate(path):
+        if draw:
+            syringe_progress += deg_per_point
+            s_mtr.run_target(100, syringe_progress, then=Stop.HOLD, wait=True)
+        else:
+            s_mtr.brake()  # stop during red-square points
 # =========================
 #       Main Script
 # =========================
