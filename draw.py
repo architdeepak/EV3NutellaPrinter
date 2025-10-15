@@ -1,4 +1,5 @@
 import tkinter as tk
+from PIL import Image, ImageTk
 import os
 
 points = []
@@ -7,13 +8,13 @@ def draw(event):
     """Left-drag = drawing (printing enabled)."""
     w = canvas.winfo_width()
     h = canvas.winfo_height()
-    
+
     norm_x = event.x / w
     norm_y = 1 - (event.y / h)  # flip y
-    
-    points.append((norm_x, norm_y, True))  # printing = True
+
+    points.append((norm_x, norm_y, True))
     r = 2
-    canvas.create_oval(event.x-r, event.y-r, event.x+r, event.y+r, fill="black")
+    canvas.create_oval(event.x - r, event.y - r, event.x + r, event.y + r, fill="black")
 
 def move_without_print(event):
     """Right-click = jump/move (printing disabled)."""
@@ -23,16 +24,14 @@ def move_without_print(event):
     norm_x = event.x / w
     norm_y = 1 - (event.y / h)
 
-    points.append((norm_x, norm_y, False))  # printing = False
+    points.append((norm_x, norm_y, False))
     r = 3
-    canvas.create_rectangle(event.x-r, event.y-r, event.x+r, event.y+r, outline="red")
+    canvas.create_rectangle(event.x - r, event.y - r, event.x + r, event.y + r, outline="red")
 
 def save_points():
     os.makedirs("paths", exist_ok=True)
-
-    # find next available number
     existing = [int(f.split(".")[0]) for f in os.listdir("paths") if f.endswith(".txt")]
-    next_num = max(existing)+1 if existing else 0
+    next_num = max(existing) + 1 if existing else 0
 
     filepath = f"paths/{next_num}.txt"
     with open(filepath, "w") as f:
@@ -42,16 +41,28 @@ def save_points():
     print(f"Saved {len(points)} points to {filepath}")
     root.destroy()
 
+# =============== UI ===============
+
 root = tk.Tk()
 root.title("Draw Path - Start any Sequence w/ Right Press!")
 
 canvas = tk.Canvas(root, width=400, height=400, bg="white")
 canvas.pack()
 
-# Bind left drag for drawing, right click for move-only
+# Load and display bread background
+try:
+    # Make sure "bread.png" exists in the same folder
+    bread_img = Image.open("bread.png").resize((400, 400))
+    bread_tk = ImageTk.PhotoImage(bread_img)
+    canvas.create_image(0, 0, anchor="nw", image=bread_tk)
+except FileNotFoundError:
+    print("⚠️ Could not find 'bread.png' — continuing without background.")
+
+# Bind drawing actions
 canvas.bind("<B1-Motion>", draw)
 canvas.bind("<Button-3>", move_without_print)
 
+# Save button
 btn = tk.Button(root, text="Save", command=save_points)
 btn.pack()
 
