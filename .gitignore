@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .venv/
+tests/archive/
+tests/reference/photos/
+tests/results/

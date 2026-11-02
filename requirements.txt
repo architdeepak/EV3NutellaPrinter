@@ -1,0 +1,3 @@
+# Laptop drawing and automatic EV3 upload. Pybricks runs on the brick.
+Pillow==12.3.0
+paramiko==5.1.0

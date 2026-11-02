@@ -5,10 +5,10 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Download and Run",
+			"name": "Brick-only saved path (use python main.py for drawing window)",
 			"type": "ev3devBrowser",
 			"request": "launch",
-			"program": "/home/robot/${workspaceRootFolderName}/main.py",
+			"program": "/home/robot/${workspaceFolderBasename}/main.py",
 			"interactiveTerminal": false
 		}
 	]
